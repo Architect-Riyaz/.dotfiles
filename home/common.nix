@@ -10,7 +10,6 @@
     git
     vim
     nodejs_24
-    corepack
     pnpm
     ansible
     docker
