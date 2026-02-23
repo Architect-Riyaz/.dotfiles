@@ -29,6 +29,7 @@
 
     shellAliases = {
       ll = "ls -la";
+      source $HOME/.nix-profile/etc/profile.d/nix.sh
     };
 
     initContent = ''
