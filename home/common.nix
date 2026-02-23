@@ -1,8 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  home.username = builtins.getEnv "USER";
-  home.homeDirectory = builtins.getEnv "HOME";
+#  home.username = builtins.getEnv "USER";
+#  home.homeDirectory = builtins.getEnv "HOME";
   home.stateVersion = "24.05";
 
   # ---------- Packages ----------
@@ -48,7 +48,7 @@
       zstyle ':vcs_info:git:*' formats '[%b]'
 
       setopt PROMPT_SUBST
-      PROMPT='%F{green}%n%f (%1~)%F{214}${vcs_info_msg_0_}%f %F{yellow}%*%f
+        PROMPT='%F{green}%n%f (%1~)%F{214}''${vcs_info_msg_0_}%f %F{yellow}%*%f
 > '
     '';
   };

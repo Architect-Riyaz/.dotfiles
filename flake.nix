@@ -1,5 +1,5 @@
 {
-  description = "Riyaz reproducible environment";
+  description = "My dotfiles";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -9,27 +9,43 @@
 
   outputs = { self, nixpkgs, home-manager, ... }:
   let
-    mkHome = system: modules:
-      home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs { inherit system; };
-        modules = modules;
-      };
-  in {
+    system = "x86_64-linux"; # change on mac if needed
+    pkgs = import nixpkgs { inherit system; };
+  in
+  {
     homeConfigurations = {
-      wsl = mkHome "x86_64-linux" [
-        ./home/common.nix
-        ./home/wsl.nix
-      ];
+      wsl = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
 
-      debian = mkHome "x86_64-linux" [
-        ./home/common.nix
-        ./home/debian.nix
-      ];
+        modules = [
+          ./home/common.nix
+          ./home/user.nix
+          ./home/wsl.nix
+        ];
 
-      mac = mkHome "aarch64-darwin" [
-        ./home/common.nix
-        ./home/mac.nix
-      ];
+        # pass username at runtime
+        extraSpecialArgs = {
+          inherit system;
+        };
+      };
+
+      debian = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+          ./home/common.nix
+          ./home/user.nix
+          ./home/debian.nix
+        ];
+      };
+
+      mac = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+          ./home/common.nix
+          ./home/user.nix
+          ./home/mac.nix
+        ];
+      };
     };
   };
 }
