@@ -10,7 +10,6 @@
     git
     vim
     nodejs_24
-    corepack
     pnpm
     ansible
     docker
@@ -31,7 +30,7 @@
       ll = "ls -la";
     };
 
-    initExtra = ''
+    initContent = ''
       # Load docker aliases
       source $HOME/.docker_app_aliases
 
@@ -56,12 +55,13 @@
   # ---------- Git ----------
   programs.git = {
     enable = true;
-    userName = "Your Name";
-    userEmail = "your@email.com";
-
-    extraConfig = {
+    settings = {
       init.defaultBranch = "main";
       pull.rebase = false;
+      user = {
+        name = "Your Name";
+        email = "your@email.com";
+      };
     };
   };
 
