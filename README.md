@@ -23,7 +23,7 @@ Works on:
 Run this first:
 
 ```bash
-~/.dotfiles/scripts/generate-user.sh
+~/.dotfiles/scripts/update-user.sh
 ```
 
 Do this before applying any config.
