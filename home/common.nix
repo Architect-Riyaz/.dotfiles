@@ -10,6 +10,7 @@
     git
     vim
     nodejs_24
+    corepack
     pnpm
     ansible
     docker
@@ -34,8 +35,10 @@
       # Load docker aliases
       source $HOME/.docker_app_aliases
 
-      # Enable corepack
-      corepack enable
+      # Enable corepack if available (avoid "command not found" errors)
+      if command -v corepack >/dev/null 2>&1; then
+        corepack enable
+      fi
 
       # PNPM path
       export PNPM_HOME="$HOME/.local/share/pnpm"
