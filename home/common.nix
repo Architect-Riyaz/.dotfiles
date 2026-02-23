@@ -40,9 +40,7 @@
         corepack enable
       fi
 
-      # PNPM path
-      export PNPM_HOME="$HOME/.local/share/pnpm"
-      export PATH="$PNPM_HOME:$PATH"
+      # Use pnpm provided by Nix (do not override PATH here)
 
       # Custom prompt (like your bash)
       autoload -Uz vcs_info
@@ -50,8 +48,8 @@
       zstyle ':vcs_info:git:*' formats '[%b]'
 
       setopt PROMPT_SUBST
-        PROMPT='%F{green}%n%f (%1~)%F{214}''${vcs_info_msg_0_}%f %F{yellow}%*%f
-> '
+      PROMPT="%F{green}%n%f (%1~)%F{214}${vcs_info_msg_0_}%f %F{yellow}%*%f
+    > "
     '';
   };
 
@@ -61,10 +59,6 @@
     settings = {
       init.defaultBranch = "main";
       pull.rebase = false;
-      user = {
-        name = "Your Name";
-        email = "your@email.com";
-      };
     };
   };
 
