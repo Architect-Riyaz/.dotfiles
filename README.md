@@ -1,32 +1,69 @@
-# ❄️ My Nix Dotfiles
+# My Nix Dotfiles
 
-Reproducible development environment using:
+Reproducible development setup using:
 
-- Nix (flakes)
-- Home Manager
-- Zsh
-- Docker
-- Node (Corepack + pnpm)
-- Ansible
-- Direnv
+* Nix (flakes)
+* Home Manager
+* Zsh
+* Docker
+* Node (Corepack + pnpm)
+* Ansible
+* Direnv
 
 Works on:
 
-- ✅ WSL
-- ✅ Debian
-- ✅ macOS
+* WSL
+* Debian
+* macOS
 
 ---
 
-# 🚀 Quick Setup (New Machine)
+# ⚠️ Important Before You Start
 
-## 1️⃣ Install Nix
+Run this first:
+
+```bash
+~/.dotfiles/scripts/generate-user.sh
+```
+
+Do this before applying any config.
+
+---
+
+# Quick Setup (New Machine)
+
+## 1️⃣ Install Zsh First
+
+### Debian / WSL
+
+```bash
+sudo apt update
+sudo apt install zsh -y
+```
+
+### macOS
+
+```bash
+brew install zsh
+```
+
+Set Zsh as default shell:
+
+```bash
+chsh -s $(which zsh)
+```
+
+Restart terminal.
+
+---
+
+## 2️⃣ Install Nix
 
 ```bash
 sh <(curl -L https://nixos.org/nix/install) --no-daemon
 ```
 
-Restart your shell.
+Restart shell.
 
 Enable flakes:
 
@@ -37,7 +74,7 @@ echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 
 ---
 
-## 2️⃣ Clone Dotfiles
+## 3️⃣ Clone Dotfiles
 
 ```bash
 git clone https://github.com/Architect-Riyaz/.dotfiles ~/.dotfiles
@@ -46,76 +83,111 @@ cd ~/.dotfiles
 
 ---
 
-## 3️⃣ Apply Configuration
+## 4️⃣ Update User Config
 
-For WSL:
+Run the script:
+
+```bash
+./scripts/update-user.sh
+```
+
+Or edit manually:
+
+```bash
+nano home/user.nix
+```
+
+---
+
+## 5️⃣ Apply Configuration
+
+### WSL
 
 ```bash
 nix run home-manager/master -- switch --flake ~/.dotfiles#wsl
 ```
 
-For Debian:
+### Debian
 
 ```bash
 nix run home-manager/master -- switch --flake ~/.dotfiles#debian
 ```
 
-For macOS:
+### macOS
 
 ```bash
 nix run home-manager/master -- switch --flake ~/.dotfiles#mac
 ```
 
+Restart terminal after switch.
+
 ---
 
-## 4️⃣ Set Zsh as Default Shell
+# What Gets Installed
 
-```bash
-chsh -s $(which zsh)
+* git
+* vim
+* docker CLI
+* ansible
+* nodejs 24
+* corepack
+* pnpm
+* direnv
+* nix-direnv
+* zsh (autosuggestions + syntax highlight)
+
+All managed by Nix.
+Do not install packages manually.
+
+---
+
+# Git Rules (Very Important)
+
+Never commit:
+
+```
+home/user.nix
 ```
 
-Restart terminal.
+Never push that file.
+
+Always stage files like this:
+
+```bash
+git add filename
+```
+
+Never use:
+
+```bash
+git add .
+```
+
+Do not update `home/user.nix` in any commit. Ever.
 
 ---
 
-# ✅ What Gets Installed
+# Docker App Aliases
 
-- git
-- vim
-- docker (CLI)
-- ansible
-- nodejs 24
-- corepack
-- pnpm
-- direnv
-- nix-direnv
-- zsh (with autosuggestions + syntax highlight)
-
----
-
-# 🐳 Docker App Aliases
-
-Stored in:
+Location:
 
 ```
 docker/docker_app_aliases.sh
 ```
 
-Automatically sourced by zsh.
+Auto loaded by Zsh.
 
 ---
 
-# 📁 Docker Data Path
+# Docker Data Path
 
-Different per system:
+| System | Path                      |
+| ------ | ------------------------- |
+| WSL    | `/mnt/d/apps/docker_apps` |
+| Debian | `~/apps/docker_apps`      |
+| macOS  | `~/apps/docker_apps`      |
 
-| System | Path |
-|--------|------|
-| WSL | `/mnt/d/apps/docker_apps` |
-| Debian | `~/apps/docker_apps` |
-| macOS | `~/apps/docker_apps` |
-
-Available as:
+Check:
 
 ```bash
 echo $DOCKER_APPS_DATA_PATH
@@ -123,24 +195,21 @@ echo $DOCKER_APPS_DATA_PATH
 
 ---
 
-# 🖥 Zsh Prompt
+# Zsh Prompt
 
-Custom prompt shows:
+Shows:
 
-- Username (green)
-- Current directory
-- Git branch
-- Time
-- New line prompt
+* Username
+* Current directory
+* Git branch
+* Time
 
-Fully managed by Nix.  
-Do not edit `.zshrc` manually.
+Managed by Nix.
+Do not edit `.zshrc`.
 
 ---
 
-# 🔁 Updating System
-
-To update packages:
+# Updating System
 
 ```bash
 home-manager switch --flake ~/.dotfiles#<system>
@@ -154,17 +223,7 @@ home-manager switch --flake ~/.dotfiles#wsl
 
 ---
 
-# 🧠 Philosophy
-
-- No manual package installs
-- No manual config edits
-- Fully declarative
-- Reproducible on any machine
-- Safe to reinstall anytime
-
----
-
-# 📂 Repository Structure
+# Repository Structure
 
 ```
 .dotfiles
@@ -173,41 +232,45 @@ home-manager switch --flake ~/.dotfiles#wsl
 │   ├── common.nix
 │   ├── wsl.nix
 │   ├── debian.nix
-│   └── mac.nix
+│   ├── mac.nix
+│   └── user.nix
 ├── docker/
 │   └── docker_app_aliases.sh
 └── scripts/
-    └── bootstrap.sh
+    ├── bootstrap.sh
+    └── update-user.sh
 ```
 
 ---
 
-# 🔥 Reset & Rebuild Anytime
+# Reset Anytime
 
-Delete your system.
+1. Install Zsh
+2. Install Nix
+3. Clone repo
+4. Run update script
+5. Apply config
 
-Reinstall Nix.
-
-Run 3 commands.
-
-You are back exactly where you were.
-
----
-
-# ⚠ Notes
-
-- Docker daemon must be installed separately on Debian/macOS.
-- On WSL, Docker Desktop (Windows) is expected.
+System restored.
 
 ---
 
-# 📌 Future Improvements
+# Notes
 
-- Starship prompt
-- Neovim config via Nix
-- Full NixOS migration
-- Dev shells per project
+* Docker daemon must be installed separately on Debian and macOS.
+* On WSL, Docker Desktop (Windows) is expected.
+
+---
+
+# Philosophy
+
+* No manual installs
+* No manual config edits (except `home/user.nix` locally)
+* Declarative setup
+* Fully reproducible
+* Safe to rebuild anytime
 
 ---
 
 Built for reproducible infrastructure.
+
