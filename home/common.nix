@@ -28,17 +28,14 @@
 
     shellAliases = {
       ll = "ls -la";
-      source $HOME/.nix-profile/etc/profile.d/nix.sh
     };
 
     initContent = ''
+      # Load nix
+      source $HOME/.nix-profile/etc/profile.d/nix.sh;
+
       # Load docker aliases
       source $HOME/.docker_app_aliases
-
-      # Enable corepack if available (avoid "command not found" errors)
-      if command -v corepack >/dev/null 2>&1; then
-        corepack enable
-      fi
 
       # Use pnpm provided by Nix (do not override PATH here)
 
