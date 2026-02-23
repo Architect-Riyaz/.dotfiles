@@ -2,31 +2,31 @@
 
 Reproducible development setup using:
 
-* Nix (flakes)
-* Home Manager
-* Zsh
-* Docker
-* Node (Corepack + pnpm)
-* Ansible
-* Direnv
+- Nix (flakes)
+- Home Manager
+- Zsh
+- Docker
+- Node (Corepack + pnpm)
+- Ansible
+- Direnv
 
 Works on:
 
-* WSL
-* Debian
-* macOS
+- WSL
+- Debian
+- macOS
 
 ---
 
 # ⚠️ Important Before You Start
 
-Run this first:
+Run this first (generate `home/user.nix` and apply config):
 
 ```bash
-~/.dotfiles/scripts/update-user.sh
+~/.dotfiles/scripts/bootstrap.sh <wsl|debian|mac>
 ```
 
-Do this before applying any config.
+Do this before applying any further config.
 
 ---
 
@@ -83,41 +83,15 @@ cd ~/.dotfiles
 
 ---
 
-## 4️⃣ Update User Config
+## 4️⃣ Generate User Config and Apply
 
-Run the script:
-
-```bash
-./scripts/update-user.sh
-```
-
-Or edit manually:
+Run the merged script (creates `home/user.nix` then applies the configuration):
 
 ```bash
-nano home/user.nix
+./scripts/bootstrap.sh <wsl|debian|mac>
 ```
 
 ---
-
-## 5️⃣ Apply Configuration
-
-### WSL
-
-```bash
-nix run home-manager/master -- switch --flake ~/.dotfiles#wsl
-```
-
-### Debian
-
-```bash
-nix run home-manager/master -- switch --flake ~/.dotfiles#debian
-```
-
-### macOS
-
-```bash
-nix run home-manager/master -- switch --flake ~/.dotfiles#mac
-```
 
 Restart terminal after switch.
 
@@ -125,16 +99,16 @@ Restart terminal after switch.
 
 # What Gets Installed
 
-* git
-* vim
-* docker CLI
-* ansible
-* nodejs 24
-* corepack
-* pnpm
-* direnv
-* nix-direnv
-* zsh (autosuggestions + syntax highlight)
+- git
+- vim
+- docker CLI
+- ansible
+- nodejs 24
+- corepack
+- pnpm
+- direnv
+- nix-direnv
+- zsh (autosuggestions + syntax highlight)
 
 All managed by Nix.
 Do not install packages manually.
@@ -199,10 +173,10 @@ echo $DOCKER_APPS_DATA_PATH
 
 Shows:
 
-* Username
-* Current directory
-* Git branch
-* Time
+- Username
+- Current directory
+- Git branch
+- Time
 
 Managed by Nix.
 Do not edit `.zshrc`.
@@ -237,8 +211,7 @@ home-manager switch --flake ~/.dotfiles#wsl
 ├── docker/
 │   └── docker_app_aliases.sh
 └── scripts/
-    ├── bootstrap.sh
-    └── update-user.sh
+    └── bootstrap.sh
 ```
 
 ---
@@ -257,20 +230,19 @@ System restored.
 
 # Notes
 
-* Docker daemon must be installed separately on Debian and macOS.
-* On WSL, Docker Desktop (Windows) is expected.
+- Docker daemon must be installed separately on Debian and macOS.
+- On WSL, Docker Desktop (Windows) is expected.
 
 ---
 
 # Philosophy
 
-* No manual installs
-* No manual config edits (except `home/user.nix` locally)
-* Declarative setup
-* Fully reproducible
-* Safe to rebuild anytime
+- No manual installs
+- No manual config edits (except `home/user.nix` locally)
+- Declarative setup
+- Fully reproducible
+- Safe to rebuild anytime
 
 ---
 
 Built for reproducible infrastructure.
-
