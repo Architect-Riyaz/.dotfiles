@@ -18,18 +18,6 @@ Works on:
 
 ---
 
-# ⚠️ Important Before You Start
-
-Run this first (generate `home/user.nix` and apply config):
-
-```bash
-~/.dotfiles/scripts/bootstrap.sh <wsl|debian|mac>
-```
-
-Do this before applying any further config.
-
----
-
 # Quick Setup (New Machine)
 
 ## 1️⃣ Install Zsh First
