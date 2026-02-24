@@ -4,21 +4,28 @@
 #  home.username = builtins.getEnv "USER";
 #  home.homeDirectory = builtins.getEnv "HOME";
   home.stateVersion = "24.05";
-
+  programs.home-manager.enable = true;
+  
   # ---------- Packages ----------
   home.packages = with pkgs; [
     git
+    stow
     vim
     nodejs_24
     pnpm
     ansible
     docker
+    jq
+    yq
+    sshpass
+    tree
   ];
 
   # ---------- Docker Aliases ----------
-  home.file.".docker_app_aliases".source =
-    ../docker/docker_app_aliases.sh;
-
+  home.file = {
+   ".docker/.apps".source =../files/common/docker/.apps;
+   ".gitconfig".source = ../files/common/git/.gitconfig;
+  };
   # ---------- ZSH ----------
   programs.zsh = {
     enable = true;
@@ -29,13 +36,12 @@
     shellAliases = {
       ll = "ls -la";
     };
-
     initContent = ''
       # Load nix
       source $HOME/.nix-profile/etc/profile.d/nix.sh;
 
       # Load docker aliases
-      source $HOME/.docker_app_aliases
+      source $HOME/.docker/.apps
 
       # Use pnpm provided by Nix (do not override PATH here)
 
@@ -49,8 +55,7 @@
 > '
     '';
   };
-
-  # ---------- Git ----------
+ # ---------- Git ----------
   programs.git = {
     enable = true;
     settings = {
