@@ -20,6 +20,9 @@
 
   # ---------- Packages ----------
   home.packages = with pkgs; [
+    btop
+    llmfit
+    chafa
     vim
     nodejs_24
     pnpm
@@ -28,7 +31,6 @@
     yq-go
     sshpass
     opencode
-    vscodium
     lazydocker
     lazygit
     tree
@@ -50,6 +52,7 @@
       ll = "ls -la";
       lg = "lazygit";
       ld = "lazydocker";
+      img = "chafa";
     };
     initContent = ''
       # Load nix
