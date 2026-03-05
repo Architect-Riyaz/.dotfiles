@@ -1,7 +1,8 @@
 alias dcb="docker compose up -d --build --force-recreate"
+alias dclean='docker stop $(docker ps -q) 2>/dev/null; docker rm $(docker ps -aq) 2>/dev/null'
 
 if [ -z "${DOCKER_APPS_DATA_PATH+x}" ]; then
-  export DOCKER_APPS_DATA_PATH="$HOME/apps/docker_apps"
+  export DOCKER_APPS_DATA_PATH="$HOME/apps/docker-apps"
 fi
 
 # Ensure base path exists
@@ -29,14 +30,71 @@ wait_for_port() {
   echo "ERROR: $SERVICE_NAME did not become ready within ${TIMEOUT}s."
   return 1
 }
+# ==============================
+# PostgreSQL
+# ==============================
+docker-pg() {
+  local PORT=${1:-5432}
+  local APP_PATH="$DOCKER_APPS_DATA_PATH/postgres"
 
+  mkdir -p "$APP_PATH"
+  docker rm -f postgres >/dev/null 2>&1
+
+  docker run -d \
+    --name pg \
+    --restart unless-stopped \
+    -p ${PORT}:5432 \
+    -e POSTGRES_USER=admin \
+    -e POSTGRES_PASSWORD=strongpassword \
+    -e POSTGRES_DB=appdb \
+    -v "$APP_PATH":/var/lib/postgresql/data \
+    postgres:latest
+
+  # Check container running
+  if ! docker ps --filter "name=^postgres$" --filter "status=running" | grep -q postgres; then
+    echo "ERROR: PostgreSQL container is not running."
+    return 1
+  fi
+
+  # Wait for service readiness
+  wait_for_port "localhost" "$PORT" "PostgreSQL"
+}
+
+# ==============================
+# MongoDB
+# ==============================
+docker-mongo() {
+  local PORT=${1:-27017}
+  local APP_PATH="$DOCKER_APPS_DATA_PATH/mongodb"
+
+  mkdir -p "$APP_PATH"
+  docker rm -f mongodb >/dev/null 2>&1
+
+  docker run -d \
+    --name mongo \
+    --restart unless-stopped \
+    -p ${PORT}:27017 \
+    -e MONGO_INITDB_ROOT_USERNAME=admin \
+    -e MONGO_INITDB_ROOT_PASSWORD=strongpassword \
+    -v "$APP_PATH":/data/db \
+    mongo:latest
+
+  # Check container running
+  if ! docker ps --filter "name=^mongodb$" --filter "status=running" | grep -q mongodb; then
+    echo "ERROR: MongoDB container is not running."
+    return 1
+  fi
+
+  # Wait for service readiness
+  wait_for_port "localhost" "$PORT" "MongoDB"
+}
 # ==============================
 # pgAdmin
 # ==============================
-docker_pgadmin() {
+docker-pgadmin() {
   local PORT=${1:-5050}
   local APP_PATH="$DOCKER_APPS_DATA_PATH/pgadmin"
-
+  echo $APP_PATH;
   mkdir -p "$APP_PATH"
   docker rm -f pgadmin >/dev/null 2>&1
 
@@ -62,7 +120,7 @@ docker_pgadmin() {
 # ==============================
 # Redis
 # ==============================
-docker_redis() {
+docker-redis() {
   local PORT=${1:-6379}
   local APP_PATH="$DOCKER_APPS_DATA_PATH/redis"
 
@@ -90,7 +148,7 @@ docker_redis() {
 # ==============================
 # DBeaver (Web)
 # ==============================
-docker_dbeaver() {
+docker-dbeaver() {
   local PORT=${1:-8978}
   local APP_PATH="$DOCKER_APPS_DATA_PATH/dbeaver"
 

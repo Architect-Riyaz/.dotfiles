@@ -4,23 +4,36 @@
 #  home.username = builtins.getEnv "USER";
 #  home.homeDirectory = builtins.getEnv "HOME";
   home.stateVersion = "24.05";
-  programs.home-manager.enable = true;
-  
+  programs.home-manager.enable = true; 
+
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowUnfreePredicate = pkg: builtins.elem (pkgs.lib.getName pkg) [ "vscode" ];
+  };
+
+  # Use overlays to override/add packages
+  nixpkgs.overlays = [
+    (self: super: {
+      mytool = super.somePackage; # example
+    })
+  ];
+
   # ---------- Packages ----------
   home.packages = with pkgs; [
-    git
-    stow
     vim
     nodejs_24
     pnpm
     ansible
-    docker
     jq
-    yq
+    yq-go
     sshpass
+    opencode
+    vscodium
+    lazydocker
+    lazygit
     tree
   ];
-
+  
   # ---------- Docker Aliases ----------
   home.file = {
    ".docker/.apps".source =../files/common/docker/.apps;
@@ -35,6 +48,8 @@
 
     shellAliases = {
       ll = "ls -la";
+      lg = "lazygit";
+      ld = "lazydocker";
     };
     initContent = ''
       # Load nix
