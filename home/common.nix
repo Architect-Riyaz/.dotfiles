@@ -22,6 +22,7 @@
   home.packages = with pkgs; [
     btop
     llmfit
+    fzf
     chafa
     vim
     nodejs_24
