@@ -49,7 +49,6 @@
     # Git / Docker
     lazygit
     lazydocker
-    lazyvim
 
     # AI
     llmfit
@@ -76,7 +75,6 @@
       ll = "ls -la";
       lg = "lazygit";
       ld = "lazydocker";
-      lv = "lazyvim";
       img = "chafa";
     };
 
