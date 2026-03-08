@@ -60,11 +60,17 @@
 
   # ---------- Files ----------
   home.file = {
-    #".docker/apps" = {
-    #  source = ../files/common/docker/apps;
-    #  recursive = true;
-    #};
     ".gitconfig".source = ../files/common/git/.gitconfig;
+  };
+
+  # ---------- Activation ----------
+  home.activation = {
+    dockerApps = lib.hm.dag.entryAfter ["linkGeneration"] ''
+      if [ -d "${../files/common/docker/apps}" ]; then
+        mkdir -p "$HOME/.docker/apps"
+        cp -rf ${../files/common/docker/apps}/. "$HOME/.docker/apps/"
+      fi
+    '';
   };
 
   # ---------- ZSH ----------
@@ -91,7 +97,7 @@
       fi
 
       # Load docker aliases
-      #source "$HOME/.docker/apps/docker-aliases.sh"
+      source "$HOME/.docker/apps/docker-aliases.sh"
 
       # -------- Completion tuning --------
       # Case insensitive completion

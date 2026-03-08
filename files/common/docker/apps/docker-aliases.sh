@@ -4,6 +4,9 @@ alias dclean='docker stop $(docker ps -q) 2>/dev/null; docker rm $(docker ps -aq
 if [ -z "${DOCKER_APPS_DATA_PATH+x}" ]; then
   export DOCKER_APPS_DATA_PATH="$HOME/apps/docker-apps"
 fi
+if [ -z "${DOCKER_APPS_PATH+x}" ]; then
+  export DOCKER_APPS_PATH="$HOME/.docker/apps"
+fi
 
 # Ensure base path exists
 mkdir -p "$DOCKER_APPS_DATA_PATH"
@@ -174,13 +177,15 @@ docker-dbeaver() {
 # Kali Linux
 # ==============================
 docker-kali() {
-  local APP_PATH="$DOCKER_APPS_DATA_PATH/kali"
+  local APP_PATH="$DOCKER_APPS_PATH"
+  local APP_DATA_PATH="$DOCKER_APPS_DATA_PATH/kali"
+  
   local IMAGE_NAME="kali-with-tools"
 
-  mkdir -p "$APP_PATH"
-
+  mkdir -p "$APP_DATA_PATH"
+  echo $APP_PATH
   echo "Building Kali image with tools (only needed once)..."
-  docker build -t "$IMAGE_NAME" -f "$HOME/.docker/apps/kali.Dockerfile" $HOME/.docker/apps
+  docker build -t "$IMAGE_NAME" -f "$APP_PATH/kali.Dockerfile" $APP_PATH
 
   docker rm -f kali >/dev/null 2>&1
 
@@ -188,7 +193,7 @@ docker-kali() {
     --name kali \
     --hostname kali \
     --restart unless-stopped \
-    -v "$APP_PATH":/root/workspace \
+    -v "$APP_DATA_PATH":/root/workspace \
     --cap-add=NET_ADMIN \
     --cap-add=SYS_PTRACE \
     "$IMAGE_NAME" \
