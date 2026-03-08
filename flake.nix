@@ -21,9 +21,9 @@
         pkgs = import nixpkgs { system = systems.wsl; };
 
         modules = [
-          ./home/common.nix
-          ./home/user.nix
-          ./home/wsl.nix
+          ./modules/common.nix
+          ./modules/user.nix
+          ./modules/wsl.nix
         ];
 
         # pass username at runtime
@@ -35,9 +35,9 @@
       debian = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs { system = systems.debian; };
         modules = [
-          ./home/common.nix
-          ./home/user.nix
-          ./home/debian.nix
+          ./modules/common.nix
+          ./modules/user.nix
+          ./modules/debian.nix
         ];
 
         extraSpecialArgs = {
@@ -48,9 +48,9 @@
       mac = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs { system = systems.mac; };
         modules = [
-          ./home/common.nix
-          ./home/user.nix
-          ./home/mac.nix
+          ./modules/common.nix
+          ./modules/user.nix
+          ./modules/mac.nix
         ];
 
         extraSpecialArgs = {

@@ -30,6 +30,7 @@
     chafa
 
     # CLI Utilities
+    eza
     fzf
     jq
     yq-go

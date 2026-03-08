@@ -4,7 +4,7 @@ usage() {
   cat <<EOF
 Usage: $(basename "$0") <wsl|debian|mac>
 
-This script generates home/user.nix for the current user and
+This script generates modules/user.nix for the current user and
 applies the Home Manager configuration for the specified system.
 Run this from the dotfiles repository directory (e.g., on USB).
 EOF
@@ -19,13 +19,13 @@ TARGET=$1
 
 # Set DOTFILES_DIR to the repository root (parent of scripts/)
 DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-USER_FILE="$DOTFILES_DIR/home/user.nix"
+USER_FILE="$DOTFILES_DIR/modules/user.nix"
 
 USERNAME="$(whoami)"
 HOME_DIR="$HOME"
 
 echo "Generating $USER_FILE for user: $USERNAME"
-mkdir -p "$DOTFILES_DIR/home"
+mkdir -p "$DOTFILES_DIR/modules"
 
 cat > "$USER_FILE" <<EOF
 { ... }:

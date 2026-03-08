@@ -169,3 +169,37 @@ docker-dbeaver() {
 
   wait_for_port "localhost" "$PORT" "DBeaver"
 }
+
+# ==============================
+# Kali Linux
+# ==============================
+docker-kali() {
+  local APP_PATH="$DOCKER_APPS_DATA_PATH/kali"
+  local IMAGE_NAME="kali-with-tools"
+
+  mkdir -p "$APP_PATH"
+
+  echo "Building Kali image with tools (only needed once)..."
+  docker build -t "$IMAGE_NAME" -f "$HOME/.docker/kali.Dockerfile" $HOME/.docker
+
+  docker rm -f kali >/dev/null 2>&1
+
+  docker run -dit \
+    --name kali \
+    --hostname kali \
+    --restart unless-stopped \
+    -v "$APP_PATH":/root/workspace \
+    --cap-add=NET_ADMIN \
+    --cap-add=SYS_PTRACE \
+    "$IMAGE_NAME" \
+    bash
+
+  # Check container running
+  if ! docker ps --filter "name=^kali$" --filter "status=running" | grep -q kali; then
+    echo "ERROR: Kali container is not running."
+    return 1
+  fi
+
+  echo "Kali Linux container started."
+  echo "Attach using: docker exec -it kali bash"
+}
