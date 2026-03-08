@@ -60,7 +60,10 @@
 
   # ---------- Files ----------
   home.file = {
-    ".docker/.apps".source = ../files/common/docker/.apps;
+    #".docker/apps" = {
+    #  source = ../files/common/docker/apps;
+    #  recursive = true;
+    #};
     ".gitconfig".source = ../files/common/git/.gitconfig;
   };
 
@@ -88,7 +91,7 @@
       fi
 
       # Load docker aliases
-      source "$HOME/.docker/.apps"
+      #source "$HOME/.docker/apps/docker-aliases.sh"
 
       # -------- Completion tuning --------
       # Case insensitive completion

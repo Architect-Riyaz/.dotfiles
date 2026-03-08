@@ -180,7 +180,7 @@ docker-kali() {
   mkdir -p "$APP_PATH"
 
   echo "Building Kali image with tools (only needed once)..."
-  docker build -t "$IMAGE_NAME" -f "$HOME/.docker/kali.Dockerfile" $HOME/.docker
+  docker build -t "$IMAGE_NAME" -f "$HOME/.docker/apps/kali.Dockerfile" $HOME/.docker/apps
 
   docker rm -f kali >/dev/null 2>&1
 

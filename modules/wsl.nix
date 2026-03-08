@@ -2,6 +2,7 @@
 
 {
   programs.zsh.shellAliases = {
+    DOCKER_APPS_PATH = "$HOME/.docker/apps";
     DOCKER_APPS_DATA_PATH = "/mnt/d/apps/docker-apps";
   };
 
