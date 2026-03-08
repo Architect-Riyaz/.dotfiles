@@ -9,7 +9,7 @@
     # Remove Windows paths from WSL
     export PATH=$(echo "$PATH" | tr ':' '\n' | grep -v '/mnt/c' | paste -sd ':' -)
     
-    alias pbpaste="powershell.exe -Command \"Get-Clipboard\""
-    alias pbcopy="powershell.exe -NoProfile -Command \"[Console]::In.ReadToEnd() | Set-Clipboard\""
+    alias paste="powershell.exe -Command \"Get-Clipboard\""
+    alias copy="powershell.exe -NoProfile -Command \"[Console]::In.ReadToEnd() | Set-Clipboard\""
   '';
 }

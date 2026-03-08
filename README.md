@@ -32,7 +32,20 @@ sudo apt install zsh -y
 ### macOS
 
 ```bash
+# Install Homebrew first (required for zsh on macOS)
+# Note: Homebrew is now installed automatically when you run the bootstrap script
+# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Then install zsh
 brew install zsh
+
+# Install Ollama (latest version) - download directly if Homebrew fails
+# Option 1: Via Homebrew (recommended)
+brew install ollama
+
+# Option 2: Direct download (if Homebrew needs sudo)
+curl -L -o ~/Downloads/ollama https://github.com/jmorganca/ollama/releases/download/v0.3.12/ollama-darwin
+chmod +x ~/Downloads/ollama
 ```
 
 Set Zsh as default shell:
@@ -97,6 +110,8 @@ Restart terminal after switch.
 - direnv
 - nix-direnv
 - zsh (autosuggestions + syntax highlight)
+- **homebrew** (package manager, installed automatically via Nix activation script)
+- **ollama** (AI model runner, installed via Homebrew or direct download on macOS, runs as a service)
 
 All managed by Nix.
 Do not install packages manually.

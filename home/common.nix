@@ -1,50 +1,73 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-#  home.username = builtins.getEnv "USER";
-#  home.homeDirectory = builtins.getEnv "HOME";
   home.stateVersion = "24.05";
-  programs.home-manager.enable = true; 
 
+  programs.home-manager.enable = true;
+
+  # ---------- Nixpkgs ----------
   nixpkgs.config = {
     allowUnfree = true;
-    allowUnfreePredicate = pkg: builtins.elem (pkgs.lib.getName pkg) [ "vscode" ];
+    allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [ "vscode" ];
   };
 
-  # Use overlays to override/add packages
+  # ---------- Overlays ----------
   nixpkgs.overlays = [
-    (self: super: {
-      mytool = super.somePackage; # example
+    (final: prev: {
+      # example custom package override
+      mytool = prev.somePackage;
     })
   ];
 
   # ---------- Packages ----------
   home.packages = with pkgs; [
+
+    # System / Monitoring
     btop
-    llmfit
-    fzf
+    tree
+    ncdu
     chafa
-    vim
-    nodejs_24
-    pnpm
-    ansible
+
+    # CLI Utilities
+    fzf
     jq
     yq-go
     sshpass
-    opencode
-    lazydocker
+
+    # Editors / Terminal
+    vim
+    tmux
+
+    # JavaScript
+    nodejs_24
+    pnpm
+
+    # DevOps
+    ansible
+
+    # Git / Docker
     lazygit
-    tree
+    lazydocker
+    lazyvim
+
+    # AI
+    llmfit
+
+    # Misc
+    opencode
   ];
-  
-  # ---------- Docker Aliases ----------
+
+  # ---------- Files ----------
   home.file = {
-   ".docker/.apps".source =../files/common/docker/.apps;
-   ".gitconfig".source = ../files/common/git/.gitconfig;
+    ".docker/.apps".source = ../files/common/docker/.apps;
+    ".gitconfig".source = ../files/common/git/.gitconfig;
   };
+
   # ---------- ZSH ----------
   programs.zsh = {
     enable = true;
+
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
@@ -53,30 +76,44 @@
       ll = "ls -la";
       lg = "lazygit";
       ld = "lazydocker";
+      lv = "lazyvim";
       img = "chafa";
     };
+
     initContent = ''
-      # Load nix
-      source $HOME/.nix-profile/etc/profile.d/nix.sh;
+      # Load nix profile
+      if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+        source "$HOME/.nix-profile/etc/profile.d/nix.sh"
+      elif [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
+        source "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
+      fi
 
       # Load docker aliases
-      source $HOME/.docker/.apps
+      source "$HOME/.docker/.apps"
 
-      # Use pnpm provided by Nix (do not override PATH here)
+      # -------- Completion tuning --------
+      # Case insensitive completion
+      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
-      # Custom prompt (like your bash)
+      # Better completion behavior
+      zstyle ':completion:*' menu select
+
+      # -------- Prompt --------
       autoload -Uz vcs_info
       precmd() { vcs_info }
+
       zstyle ':vcs_info:git:*' formats '[%b]'
 
-      setopt PROMPT_SUBST
-       PROMPT='%F{green}%n%f (%1~)%F{214}''${vcs_info_msg_0_}%f %F{yellow}%*%f
-> '
-    '';
+      setopt PROMPT_SUBST 
+      PROMPT='%F{green}%n%f (%1~)%F{214}''${vcs_info_msg_0_}%f %F{yellow}%*%f 
+> ' 
+     '';
   };
- # ---------- Git ----------
+
+  # ---------- Git ----------
   programs.git = {
     enable = true;
+
     settings = {
       init.defaultBranch = "main";
       pull.rebase = false;
@@ -84,6 +121,9 @@
   };
 
   # ---------- Direnv ----------
-  programs.direnv.enable = true;
-  programs.direnv.nix-direnv.enable = true;
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
 }

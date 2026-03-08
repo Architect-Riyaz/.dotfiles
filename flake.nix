@@ -9,13 +9,16 @@
 
   outputs = { self, nixpkgs, home-manager, ... }:
   let
-    system = "x86_64-linux"; # change on mac if needed
-    pkgs = import nixpkgs { inherit system; };
+    systems = {
+      wsl = "x86_64-linux";
+      debian = "x86_64-linux";
+      mac = "aarch64-darwin";
+    };
   in
   {
     homeConfigurations = {
       wsl = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = import nixpkgs { system = systems.wsl; };
 
         modules = [
           ./home/common.nix
@@ -25,26 +28,34 @@
 
         # pass username at runtime
         extraSpecialArgs = {
-          inherit system;
+          system = systems.wsl;
         };
       };
 
       debian = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = import nixpkgs { system = systems.debian; };
         modules = [
           ./home/common.nix
           ./home/user.nix
           ./home/debian.nix
         ];
+
+        extraSpecialArgs = {
+          system = systems.debian;
+        };
       };
 
       mac = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = import nixpkgs { system = systems.mac; };
         modules = [
           ./home/common.nix
           ./home/user.nix
           ./home/mac.nix
         ];
+
+        extraSpecialArgs = {
+          system = systems.mac;
+        };
       };
     };
   };

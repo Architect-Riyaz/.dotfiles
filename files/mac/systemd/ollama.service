@@ -1,0 +1,15 @@
+[Unit]
+Description=Ollama Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/opt/homebrew/bin/ollama serve
+Restart=always
+RestartSec=3
+Environment="OLLAMA_HOST=127.0.0.1:11434"
+
+[Install]
+WantedBy=multi-user.target

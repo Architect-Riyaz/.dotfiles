@@ -1,9 +1,15 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
-  # Debian-specific environment variables
-  home.sessionVariables = {
-    DOCKER_APPS_DATA_PATH =
-      "${config.home.homeDirectory}/apps/docker-apps";
+  home.packages = with pkgs; [
+  ];
+
+  programs.zsh = {
+    enable = true;
+
+    initContent = ''
+      alias copy="pbcopy"
+      alias paste="pbpaste"
+    '';
   };
 }
